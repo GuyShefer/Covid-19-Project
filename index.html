@@ -1,14 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <script type="module" src="script/index.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <title>Covid-19 Project</title>
 </head>
+
 <body>
-    
+    <main class="main">
+        <h2>Covid - 19 Project</h2>
+        <canvas id="myChart"></canvas>
+
+        <div class="indicator-btns">
+            <button class="btn ind-btns">Confirmed</button>
+            <button class="btn ind-btns">Deaths</button>
+            <button class="btn ind-btns">Recovered</button>
+            <button class="btn ind-btns">Critical</button>
+        </div>
+
+        <div class="region-btns">
+            <button class="btn reg-btn">Asia</button>
+            <button class="btn reg-btn">Europe</button>
+            <button class="btn reg-btn">Africa</button>
+            <button class="btn reg-btn">Americas</button>
+            <button class="btn reg-btn">World</button>
+        </div>
+
+    </main>
+
 </body>
+
 </html>
