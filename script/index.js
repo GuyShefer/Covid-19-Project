@@ -6,6 +6,7 @@
     let currentRegion = 'World';
     const indicatorBtns = document.querySelectorAll('.ind-btns');
     const regionBtns = document.querySelectorAll('.reg-btn');
+    getWorld();
 
     async function getWorld() {
         const countriesArr = (await (await fetch(countriesBaseUrl)).json());
@@ -13,6 +14,7 @@
             const country = await getCountryByCCA(countriesArr[i].cca2);
             countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
         }
+        convetObjToArrays('confirmed');
     }
 
     async function getCountryByCCA(code) {
@@ -31,12 +33,11 @@
         }
     }
 
-    getWorld();
-
-    // convert the world object to 2 arrays for diplay in the chart. (region become global varible)
-    function worldToRegion(indicatorBtn) {
+    // convert the world object to 2 arrays for diplay in the chart.
+    function convetObjToArrays(indicatorBtn) {
         const labelsArr = [];
         const dataArr = [];
+
         if (currentRegion === 'World') {
             Object.keys(world).forEach(region => {
                 addRegionIndicatorToArrays(region);
@@ -59,8 +60,13 @@
 
     // display the chart
     const displayChart = (keys, values, region) => {
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var chart = new Chart(ctx, {
+
+        document.getElementById("myChart").remove(); // canvas
+        const div = document.querySelector(".canvas"); // parent element
+        div.insertAdjacentHTML("afterbegin", "<canvas id='myChart'></canvas>"); //adding the canvas again
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myLineChart = new Chart(ctx, {
             // The type of chart we want to create
             type: 'line',
             // The data for our dataset
@@ -78,20 +84,19 @@
         });
     };
 
-    // get the indication buttons and set a listener
-    // set current indicator
+    // set current indicator + add an event listener
     for (let i = 0; i < indicatorBtns.length; i++) {
         indicatorBtns[i].addEventListener('click', () => {
             let indicatorBtn = (indicatorBtns[i].textContent).toLowerCase();
-            worldToRegion(indicatorBtn);
+            convetObjToArrays(indicatorBtn);
         })
     }
 
-    // get the region buttons and set a listener
+    // get the region buttons and set an event listener
     for (let i = 0; i < regionBtns.length; i++) {
         regionBtns[i].addEventListener('click', () => {
             currentRegion = regionBtns[i].textContent
-            worldToRegion('confirmed');
+            convetObjToArrays('confirmed');
         });
     }
 
