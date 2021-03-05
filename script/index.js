@@ -1,6 +1,7 @@
 (function () {
 
-    const countriesBaseUrl = 'https://api.allorigins.win/raw?url=' + 'https://restcountries.herokuapp.com/api/v1';
+    // const countriesBaseUrl = 'https://api.allorigins.win/raw?url=' + 'https://restcountries.herokuapp.com/api/v1';
+    const countriesBaseUrl = 'https://api.codetabs.com/v1/proxy?quest=' + 'https://restcountries.herokuapp.com/api/v1';
     const coronaBaseUrl = 'https://corona-api.com/countries/';
     let world = {};
     let currentRegion = 'World';
@@ -8,6 +9,12 @@
     const regionBtns = document.querySelectorAll('.reg-btn');
     const dropDown = document.querySelector('.drop-down');
     let select = document.querySelector('#selection');
+    const modal = document.querySelector('.modal');
+    const modalHeader = document.querySelector('h3');
+    let modalBody = document.querySelector('.modal-body');
+    const closeModal = document.querySelector('.close');
+    const showCountyBtn = document.querySelector('.select-btn');
+    const animation = document.querySelector('.animation');
     getWorld();
 
     async function getWorld() {
@@ -16,6 +23,7 @@
             const country = await getCountryByCCA(countriesArr[i].cca2);
             countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
         }
+        animation.style.display = 'none';
         convetObjToArrays('confirmed');
     }
 
@@ -112,19 +120,21 @@
         });
     }
 
-    const showCountyBtn = document.querySelector('.select-btn');
-    showCountyBtn.addEventListener('click', () => {
-        getCountryInfo(); // should rename to open modal
+    // open county modal when clicked
+    showCountyBtn.addEventListener('click', async () => {
+        const conutry = await getCountryInfo();
+        createModal(conutry);
         modal.style.display = "block";
     })
 
-    // duplicate function!@#
+    // duplicate function!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     const getCountryInfo = async () => {
         const cca = select.options[select.selectedIndex].value;
         const response = await fetch(`${coronaBaseUrl}${cca}`);
         const data = (await response.json()).data;
         // getting the country obj from the api
         const country = {
+            name: data.name,
             population: data.population,
             deaths: data.latest_data.deaths,
             confirmed: data.latest_data.confirmed,
@@ -132,10 +142,14 @@
             recovered: data.latest_data.recovered,
             deathRate: (data.latest_data.calculated.death_rate).toFixed(2),
         }
-        modalHeader.textContent = (data.name).toUpperCase(); // set modal title.
+        return country;
+    }
 
+    // crating the modal
+    const createModal = (country) => {
+        modalHeader.textContent = (country.name) // set modal title.
 
-        if(modalBody){
+        if (modalBody) {
             modalBody.remove();
             modalBody = document.createElement('div')
             modalBody.classList.add("modal-body");
@@ -152,17 +166,10 @@
             box.appendChild(boxHeader);
             box.appendChild(boxData);
             modalBody.appendChild(box);
-
         }
-
-
     }
 
-    const modalHeader = document.querySelector('h3');
-    let modalBody = document.querySelector('.modal-body');
-
-    const modal = document.querySelector('.modal');
-    const closeModal = document.querySelector('.close');
+    // close modal
     closeModal.addEventListener('click', () => {
         modal.style.display = "none";
     });

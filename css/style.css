@@ -6,7 +6,7 @@
 }
 
 .canvas {
-    width: 70%;
+    width: 80%;
     height: 65%;
 }
 
@@ -119,4 +119,12 @@ canvas {
 
 .box h4 {
     margin-bottom: 30px;
+}
+
+.main .select-btn {
+    margin-top: 20px;
+}
+
+.animation {
+    position: absolute;
 }
