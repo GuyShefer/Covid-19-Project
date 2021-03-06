@@ -17,40 +17,43 @@
     const animation = document.querySelector('.animation');
     getWorld();
 
+    // Getting the world object from the api.
     async function getWorld() {
         world = JSON.parse(localStorage.getItem('world'));
-        console.log(world);
         if (world === null) {
             world = {};
             const countriesArr = (await (await fetch(countriesBaseUrl)).json());
             for (let i = 0; i < countriesArr.length; i++) {
-                const country = await getCountryByCCA(countriesArr[i].cca2);
+                const country = await getCountryByCCA(countriesArr[i].cca2, countriesArr[i].region);
                 countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
             }
             localStorage.setItem('world', JSON.stringify(world));
         }
         animation.style.display = 'none';
-        convetObjToArrays('confirmed');
+        convetObjWorldToArrays('confirmed');
     }
 
-    async function getCountryByCCA(code) {
+    // Getting each conutry by cca code from the api.
+    async function getCountryByCCA(code, region) {
         if (code !== 'XK') {
             const response = await fetch(`${coronaBaseUrl}${code}`);
             const data = (await response.json()).data;
             const country = {
                 name: data.name,
+                region: region,
+                code: code,
+                population: data.population,
                 confirmed: data.latest_data.confirmed,
                 deaths: data.latest_data.deaths,
                 recovered: data.latest_data.recovered,
                 critical: data.latest_data.critical,
-                code: code,
             }
             return country;
         }
     }
 
     // convert the world object to 2 arrays(country name ,indicator value) to diplay it in the chart.
-    function convetObjToArrays(indicatorBtn) {
+    function convetObjWorldToArrays(indicatorBtn) {
         if (select !== null) {
             select.remove();
         }
@@ -74,7 +77,7 @@
                     dataArr.push(country[indicatorBtn]);
                     // adding new option to the dropdown.
                     const option = document.createElement('option');
-                    option.value = country.code;
+                    option.value = country.region;
                     option.innerHTML += `${country.name}`;
                     select.appendChild(option);
                 }
@@ -114,7 +117,7 @@
     for (let i = 0; i < indicatorBtns.length; i++) {
         indicatorBtns[i].addEventListener('click', () => {
             let indicatorBtn = (indicatorBtns[i].textContent).toLowerCase();
-            convetObjToArrays(indicatorBtn);
+            convetObjWorldToArrays(indicatorBtn);
         })
     }
 
@@ -122,46 +125,37 @@
     for (let i = 0; i < regionBtns.length; i++) {
         regionBtns[i].addEventListener('click', () => {
             currentRegion = regionBtns[i].textContent
-            convetObjToArrays('confirmed');
+            convetObjWorldToArrays('confirmed');
         });
     }
 
     // open county modal when clicked
     showCountyBtn.addEventListener('click', async () => {
-        const conutry = await getCountryInfo();
-        createModal(conutry);
+        const country = getCountryInfo();
+        createModal(country);
         modal.style.display = "block";
     })
 
-    // duplicate function!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    const getCountryInfo = async () => {
-        const cca = select.options[select.selectedIndex].value;
-        const response = await fetch(`${coronaBaseUrl}${cca}`);
-        const data = (await response.json()).data;
-        // getting the country obj from the api
-        const country = {
-            name: data.name,
-            population: data.population,
-            deaths: data.latest_data.deaths,
-            confirmed: data.latest_data.confirmed,
-            critical: data.latest_data.critical,
-            recovered: data.latest_data.recovered,
-            deathRate: (data.latest_data.calculated.death_rate).toFixed(2),
+    // getting country information from the 'world' object.
+    const getCountryInfo = () => {
+        const countryName = select.options[select.selectedIndex].text; // return the country name
+        const countryRegion = select.options[select.selectedIndex].value;  // return country region
+        for (let i = 0; i < world[countryRegion].length; i++) {
+            if (world[countryRegion][i].name === countryName) {
+                return world[countryRegion][i];
+            }
         }
-        return country;
     }
 
     // crating the modal
     const createModal = (country) => {
         modalHeader.textContent = (country.name) // set modal title.
-
         if (modalBody) {
             modalBody.remove();
             modalBody = document.createElement('div')
             modalBody.classList.add("modal-body");
             modal.children[0].appendChild(modalBody);
         }
-
         for (let [key, value] of Object.entries(country)) {
             const box = document.createElement('div');
             const boxHeader = document.createElement('h4');
@@ -175,18 +169,17 @@
         }
     }
 
-    // close modal
+    // close modal button
     closeModal.addEventListener('click', () => {
         modal.style.display = "none";
     });
 
-    // When the user clicks anywhere outside of the modal, close it
+    // When the user clicks anywhere outside of the modal, close the modal
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     }
-
 
 })();
 
