@@ -7,7 +7,7 @@
 
 .canvas {
     width: 80%;
-    height: 65%;
+    height: 60%;
 }
 
 canvas {
@@ -26,7 +26,7 @@ canvas {
 
 .main h2 {
     font-size: 38px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .main .btn {
@@ -53,11 +53,20 @@ canvas {
 }
 
 .indicator-btns , .region-btns {
-    z-index: 10;
+    z-index: 1;
 }
 
 .drop-down {
-    margin-top: 20px;
+    width: 600px;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+select {
+    width: 60%;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 0 10px;
 }
 
 
@@ -80,10 +89,11 @@ canvas {
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */
+    width: 50%;
+    border-radius: 10px;
 }
 
 /* The Close Button */
@@ -103,6 +113,7 @@ canvas {
 
 .modal-header {
     text-align: center;
+    font-size: 18px;
 }
 
 .modal-body{
@@ -112,9 +123,9 @@ canvas {
 }
 
 .box {
- width: 100px;
- height: 100px;
- text-align: center;
+    width: 100px;
+    height: 100px;
+    text-align: center;
 }
 
 .box h4 {
@@ -127,4 +138,58 @@ canvas {
 
 .animation {
     position: absolute;
+}
+
+@media only screen and (max-width: 500px) {
+
+    .canvas {
+        margin-top: 100px;
+        margin-bottom: 80px;
+        width: 350px;
+        height: 250px;
+    }
+
+    .region-btns {
+        text-align: center;
+    }
+    
+    .drop-down {
+        width: 360px;
+        margin-top: 10px;
+        font-size: 14px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    select {
+        width: 40%;
+        padding: 5px;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+
+    .modal-content {
+        width: 80%;
+    }
+
+    .modal-body{
+        display: grid;
+        margin-top: 20px; 
+    }
+
+    .modal-header h3 {
+        margin-left: 20px;
+    }
+
+    .box h4 {
+        margin-bottom: 20px;
+    }
+
+    .box {
+        width: 80px;
+        height: 80px;
+        text-align: center;
+    }
+
+
 }

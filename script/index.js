@@ -7,7 +7,7 @@
     let currentRegion = 'World';
     const indicatorBtns = document.querySelectorAll('.ind-btns');
     const regionBtns = document.querySelectorAll('.reg-btn');
-    const dropDown = document.querySelector('.drop-down');
+    const selectInput = document.querySelector('#select-input');
     let select = document.querySelector('#selection');
     const modal = document.querySelector('.modal');
     const modalHeader = document.querySelector('h3');
@@ -57,7 +57,7 @@
             select.remove();
         }
         select = document.createElement('select');
-        dropDown.appendChild(select);
+        selectInput.appendChild(select);
         const labelsArr = [];
         const dataArr = [];
 
