@@ -18,10 +18,16 @@
     getWorld();
 
     async function getWorld() {
-        const countriesArr = (await (await fetch(countriesBaseUrl)).json());
-        for (let i = 0; i < countriesArr.length; i++) {
-            const country = await getCountryByCCA(countriesArr[i].cca2);
-            countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
+        world = JSON.parse(localStorage.getItem('world'));
+        console.log(world);
+        if (world === null) {
+            world = {};
+            const countriesArr = (await (await fetch(countriesBaseUrl)).json());
+            for (let i = 0; i < countriesArr.length; i++) {
+                const country = await getCountryByCCA(countriesArr[i].cca2);
+                countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
+            }
+            localStorage.setItem('world', JSON.stringify(world));
         }
         animation.style.display = 'none';
         convetObjToArrays('confirmed');
@@ -63,7 +69,7 @@
 
         function addRegionIndicToArraysAndAddDropDownOption(currReg) {
             world[currReg].forEach(country => {
-                if (country !== undefined) {
+                if (country !== undefined && country !== null) {
                     labelsArr.push(country.name);
                     dataArr.push(country[indicatorBtn]);
                     // adding new option to the dropdown.
@@ -79,7 +85,7 @@
     }
 
     // display the chart
-    const displayChart = (keys, values, region) => {
+    function displayChart(keys, values, region) {
 
         document.getElementById("myChart").remove(); // canvas
         const div = document.querySelector(".canvas"); // parent element
@@ -102,7 +108,7 @@
             // Configuration options go here
             options: {}
         });
-    };
+    }
 
     // set current indicator + add an event listener
     for (let i = 0; i < indicatorBtns.length; i++) {
