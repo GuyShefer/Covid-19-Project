@@ -19,35 +19,46 @@
 
     // Getting the world object from the api.
     async function getWorld() {
-        world = JSON.parse(localStorage.getItem('world'));
-        if (world === null) {
-            world = {};
-            const countriesArr = (await (await fetch(countriesBaseUrl)).json());
-            for (let i = 0; i < countriesArr.length; i++) {
-                const country = await getCountryByCCA(countriesArr[i].cca2, countriesArr[i].region);
-                countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
+        try {
+            world = JSON.parse(localStorage.getItem('world'));
+            if (world === null) {
+                world = {};
+
+                const countriesArr = (await (await fetch(countriesBaseUrl)).json());
+                for (let i = 0; i < countriesArr.length; i++) {
+                    const country = await getCountryByCCA(countriesArr[i].cca2, countriesArr[i].region);
+                    countriesArr[i].region in world ? world[countriesArr[i].region].push(country) : world[countriesArr[i].region] = [country];
+                }
+
+                localStorage.setItem('world', JSON.stringify(world));
             }
-            localStorage.setItem('world', JSON.stringify(world));
+            animation.style.display = 'none';
+            convetObjWorldToArrays('confirmed');
+        } catch (err) {
+            console.log(err);
         }
-        animation.style.display = 'none';
-        convetObjWorldToArrays('confirmed');
     }
 
     // Getting each conutry by cca code from the api.
     async function getCountryByCCA(code, region) {
         if (code !== 'XK') {
-            const response = await fetch(`${coronaBaseUrl}${code}`);
-            const data = (await response.json()).data;
-            const country = {
-                name: data.name,
-                region: region,
-                population: data.population,
-                confirmed: data.latest_data.confirmed,
-                deaths: data.latest_data.deaths,
-                recovered: data.latest_data.recovered,
-                critical: data.latest_data.critical,
+            try {
+                const response = await fetch(`${coronaBaseUrl}${code}`);
+                const data = (await response.json()).data;
+
+                const country = {
+                    name: data.name,
+                    region: region,
+                    population: data.population,
+                    confirmed: data.latest_data.confirmed,
+                    deaths: data.latest_data.deaths,
+                    recovered: data.latest_data.recovered,
+                    critical: data.latest_data.critical,
+                }
+                return country;
+            } catch (err) {
+                console.log(err);
             }
-            return country;
         }
     }
 
