@@ -41,7 +41,6 @@
             const country = {
                 name: data.name,
                 region: region,
-                code: code,
                 population: data.population,
                 confirmed: data.latest_data.confirmed,
                 deaths: data.latest_data.deaths,
