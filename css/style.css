@@ -52,8 +52,8 @@ canvas {
     font-size: 22px
 }
 
-.indicator-btns , .region-btns {
-    z-index: 1;
+.indicator-btns , .region-btns , .drop-down{
+    z-index: 10;
 }
 
 .drop-down {
@@ -76,7 +76,7 @@ select {
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 10; /* Sit on top */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
